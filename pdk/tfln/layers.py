@@ -13,7 +13,8 @@ class LAYER(LayerMap):
     WG: Layer = (1, 0)
     """Main ridge waveguide layer.
     
-    Defines optical waveguide with a ridge height of 400nm."""
+    Defines optical waveguide. Assuming a total 600nm TFLN layer, etching leads to
+    a ridge height of 400nm, on-top a 200nm base."""
 
     # ----------------------------------------------------------------
     # Metallization
