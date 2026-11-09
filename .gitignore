@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# Interconnect-related files
+lumfoundry_template
+
 # C extensions
 *.so
 
