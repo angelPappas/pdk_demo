@@ -1,6 +1,6 @@
 name,value,unit,description
 wg_width,1.0,um,WG ridge width at the BASE (as drawn in GDS)
-wg_radius,50.0,um,Minimum bend radius of the WG1 cross-section
+wg_radius,50.0,um,Minimum bend radius of the WG cross-section
 ridge_height,0.4,um,Ridge height above the slab
 slab_thickness,0.2,um,Remaining LN slab thickness
 sidewall_angle,70.0,deg,Ridge sidewall angle measured from the slab surface
@@ -8,3 +8,5 @@ s_bend_length,20.0,um,Length of the sine S-bends along x
 dc_port_separation,4.0,um,Centre-to-centre arm separation at the coupler ports
 dc_gap,0.4,um,Directional coupler gap at the ridge base (50:50 design)
 dc_length,21.0,um,Directional coupler straight coupled length (50:50 design)
+taper_width_wide,12.0,um,Wide end of the grating-coupler taper (= grating width)
+taper_length,200.0,um,Grating-coupler taper length (PLACEHOLDER until the EME sweep is done)
