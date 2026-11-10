@@ -6,6 +6,13 @@ __pycache__/
 # Interconnect-related files
 lumfoundry_template
 
+# Simulation files and byproducts
+*.fsp
+*.lms
+*.icp
+*.log
+*:Zone.Identifier
+
 # C extensions
 *.so
 
