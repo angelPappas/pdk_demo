@@ -10,7 +10,7 @@ dc_gap,0.4,um,Directional coupler gap at the ridge base (50:50 design)
 dc_length,21.0,um,Directional coupler straight coupled length (50:50 design)
 taper_width_wide,12.0,um,Wide end of the grating-coupler taper (= grating width)
 taper_length,200.0,um,Grating-coupler taper length (PLACEHOLDER until the EME sweep is done)
-gc_period,0.95,um,Grating coupler period (3D FDTD: 0.384 peak eff at 1558 nm; 1550 nm eff 0.370)
+gc_period,0.945,um,Grating coupler period (3D FDTD: 0.384 peak eff at 1558 nm; 1550 nm eff 0.370)
 gc_fill,0.6,1,Grating tooth BASE width divided by period
 gc_n_periods,20,1,Number of grating periods
 gc_fiber_angle,8.0,deg,Fibre tilt in air; positive = tilted toward the waveguide side in the 3D FDTD convention
