@@ -1,0 +1,186 @@
+{
+  "general": {
+    "description": "TFLN WG ridge waveguide, wavelength-resolved, TE",
+    "prefix": "WG",
+    "notes": {
+      "_data": [
+        {
+          "property": "wavelength_range",
+          "value": "C-band (1530 - 1565 nm)"
+        },
+        {
+          "property": "source",
+          "value": "MODE FDE, TE0, quadratic fit of neff 1500-1600 nm"
+        },
+        {
+          "property": "assumed",
+          "value": "loss and dneff_dT are assumptions, not simulated"
+        }
+      ],
+      "_type": "cell"
+    }
+  },
+  "ports": {
+    "opt_1": {
+      "name": "opt_1",
+      "dir": "Bidirectional",
+      "loc": 0.5,
+      "pos": "Left",
+      "order": 1
+    },
+    "opt_2": {
+      "name": "opt_2",
+      "dir": "Bidirectional",
+      "loc": 0.5,
+      "pos": "Right",
+      "order": 2
+    }
+  },
+  "parameters": {
+    "wg_length": {
+      "name": "wg_length",
+      "min": 0,
+      "max": 1.0,
+      "unit": "um",
+      "default": 1e-05,
+      "visible_to_user": 1,
+      "annotate": 0
+    },
+    "temperature": {
+      "default": "%temperature%"
+    }
+  },
+  "model_data": {
+    "photonic_model": "wg_parameterized",
+    "mode_data": {
+      "_data": [
+        {
+          "ID": 1.0,
+          "name": "TE"
+        }
+      ],
+      "_type": "cell"
+    },
+    "wavelength": {
+      "_complex": false,
+      "_data": [
+        1.5e-06,
+        1.5100000000000002e-06,
+        1.5199999999999998e-06,
+        1.53e-06,
+        1.5399999999999997e-06,
+        1.5499999999999996e-06,
+        1.5599999999999997e-06,
+        1.5699999999999994e-06,
+        1.5799999999999995e-06,
+        1.5899999999999992e-06,
+        1.5999999999999993e-06
+      ],
+      "_size": [
+        11,
+        1
+      ],
+      "_type": "matrix"
+    },
+    "temperature": 300,
+    "neff": {
+      "_complex": false,
+      "_data": [
+        1.8689384401287323,
+        1.8663424782381897,
+        1.863751237999894,
+        1.861164667965682,
+        1.858579965975784,
+        1.8560002300991327,
+        1.853425565307755,
+        1.8508560776717309,
+        1.8482918742513876,
+        1.8457330629935023,
+        1.8431797526305902
+      ],
+      "_size": [
+        11,
+        1
+      ],
+      "_type": "matrix"
+    },
+    "ng": {
+      "_complex": false,
+      "_data": [
+        2.2584394873063998,
+        2.25794070367294,
+        2.257393778334434,
+        2.256797747062635,
+        2.256148894917687,
+        2.255449407188438,
+        2.2546984760668307,
+        2.25389529484286,
+        2.253039057796767,
+        2.2521289600952454,
+        2.2511641976907253
+      ],
+      "_size": [
+        11,
+        1
+      ],
+      "_type": "matrix"
+    },
+    "D": {
+      "_complex": false,
+      "_data": [
+        -0.00015789855932604683,
+        -0.00017427623976625764,
+        -0.000190856900648561,
+        -0.00020764054197295828,
+        -0.00022462716373944803,
+        -0.0002418167659480313,
+        -0.0002592093485987082,
+        -0.0002768049116914775,
+        -0.0002946034552263408,
+        -0.00031260497920329654,
+        -0.0003308094836223462
+      ],
+      "_size": [
+        11,
+        1
+      ],
+      "_type": "matrix"
+    },
+    "loss": {
+      "_complex": false,
+      "_data": [
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0,
+        20.0
+      ],
+      "_size": [
+        11,
+        1
+      ],
+      "_type": "matrix"
+    },
+    "number_of_taps_estimation": "group delay"
+  },
+  "QA": {
+    "parameters": {
+      "wavelength": {
+        "min": 1.5e-06,
+        "max": 1.5999999999999993e-06
+      }
+    },
+    "relative_tolerances": {
+      "loss": 0.001,
+      "neff": 0.01,
+      "ng": 0.5,
+      "delay_time": 0.01
+    }
+  }
+}
