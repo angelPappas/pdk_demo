@@ -1,0 +1,136 @@
+{
+  "general": {
+    "description": "TFLN WG1 directional coupler, 0.40 um gap, 21 um coupling length - C band TE",
+    "prefix": "DC",
+    "notes": {
+      "_data": [
+        {
+          "property": "wavelength_range",
+          "value": "1530 - 1570 nm"
+        },
+        {
+          "property": "polarization",
+          "value": "TE"
+        },
+        {
+          "property": "source",
+          "value": "3D FDTD S-parameter sweep, 11 frequency points"
+        }
+      ],
+      "_type": "cell"
+    }
+  },
+  "ports": {
+    "opt_1": {
+      "name": "opt_1",
+      "dir": "Bidirectional",
+      "loc": 0.33,
+      "pos": "Left",
+      "order": 1
+    },
+    "opt_2": {
+      "name": "opt_2",
+      "dir": "Bidirectional",
+      "loc": 0.675,
+      "pos": "Left",
+      "order": 2
+    },
+    "opt_3": {
+      "name": "opt_3",
+      "dir": "Bidirectional",
+      "loc": 0.33,
+      "pos": "Right",
+      "order": 3
+    },
+    "opt_4": {
+      "name": "opt_4",
+      "dir": "Bidirectional",
+      "loc": 0.675,
+      "pos": "Right",
+      "order": 4
+    }
+  },
+  "model_data": {
+    "photonic_model": "spar_fixed",
+    "mode_data": {
+      "_data": [
+        {
+          "ID": 1.0,
+          "name": "TE"
+        }
+      ],
+      "_type": "cell"
+    },
+    "number_of_taps_estimation": "group delay",
+    "digital_filter_type": "FIR",
+    "fir_taps": 1.0,
+    "spar_filename": "dc_te_cband_ydir_S_params.txt",
+    "passivity_enforcement": "ignore",
+    "reciprocity_enforcement": "ignore"
+  },
+  "QA": {
+    "parameters": {
+      "wavelength": {
+        "min": 1.5300000000000002e-06,
+        "max": 1.57e-06
+      }
+    },
+    "number_wavelength_points": 1000,
+    "compare_time_abs_transmission": 0,
+    "compare_time_bandwidth_fraction": 0.3,
+    "reference_data_available": 1,
+    "relative_tolerances": {
+      "group_delay": 0.05
+    },
+    "absolute_tolerances": {
+      "S_data": 0.0001,
+      "S_regression": 1e-05,
+      "S_time": 0.025,
+      "power_dB": 1e-06,
+      "passivity": 1e-05,
+      "reciprocity": 1e-05,
+      "wavelength_nm": 1e-05
+    },
+    "GD_qa_ports": {
+      "_data": [
+        {
+          "_complex": false,
+          "_data": [
+            1.0,
+            4.0
+          ],
+          "_size": [
+            1,
+            2
+          ],
+          "_type": "matrix"
+        },
+        {
+          "_complex": false,
+          "_data": [
+            3.0,
+            2.0
+          ],
+          "_size": [
+            1,
+            2
+          ],
+          "_type": "matrix"
+        },
+        {
+          "_complex": false,
+          "_data": [
+            4.0,
+            1.0
+          ],
+          "_size": [
+            1,
+            2
+          ],
+          "_type": "matrix"
+        }
+      ],
+      "_type": "cell"
+    }
+  }
+}
