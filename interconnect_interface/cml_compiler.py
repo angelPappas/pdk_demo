@@ -1,3 +1,4 @@
+import json
 import re
 import shutil
 import subprocess
@@ -79,11 +80,44 @@ def cml(
         except OSError:
             pass
 
+    if timed_out.is_set() or (check and proc.returncode != 0):
+        _dump_logs(cwd)
     if timed_out.is_set():
         raise RuntimeError(f"cml-compiler timed out after {timeout}s\n{''.join(out)}")
     if check and proc.returncode != 0:
         raise RuntimeError(f"cml-compiler failed (exit {proc.returncode})\n{''.join(out)}")
     return proc.returncode
+
+
+def _dump_logs(folder: Path, lines: int = 60) -> None:
+    """The console hides the real error; the compiler writes details to cml-compiler.state / *.log files."""
+    seen = []
+    for pattern in ("cml-compiler.state", "*.log", "*/*.log", "*/*/*.log"):
+        for f in sorted(folder.glob(pattern)):
+            if f in seen or not f.is_file():
+                continue
+            seen.append(f)
+            print(f"\n===== {f.relative_to(folder)} (last {lines} lines) =====")
+            try:
+                print("\n".join(f.read_text(errors="replace").splitlines()[-lines:]))
+            except OSError as e:
+                print("(could not read:", e, ")")
+
+
+def _rmtree(path: Path, tries: int = 8) -> None:
+    """Delete a folder on /mnt/c, retrying: Windows may still hold files for a moment after a process ends."""
+    for i in range(tries):
+        try:
+            shutil.rmtree(path)
+            return
+        except FileNotFoundError:
+            return
+        except PermissionError as e:
+            err = e
+            time.sleep(2)
+    raise RuntimeError(f"Cannot delete {path}: {err}. Something still has it open: end leftover Lumerical, "
+                       "java or python processes in Task Manager (or reboot) and close Explorer/editor windows "
+                       "showing that folder.")
 
 
 def deploy_template(name: str = FOUNDRY_NAME, fresh: bool = True) -> None:
@@ -93,7 +127,7 @@ def deploy_template(name: str = FOUNDRY_NAME, fresh: bool = True) -> None:
     if fresh:
         for d in {target, default}:
             if d.exists():
-                shutil.rmtree(d)
+                _rmtree(d)
     cml("template")                                   # always creates WORK_DIR/lumfoundry_template
     if not default.exists():
         raise RuntimeError(f"Expected {default} after deploy, but it doesn't exist")
@@ -132,6 +166,21 @@ def remove_user_created(name: str = FOUNDRY_NAME) -> list[str]:
             shutil.rmtree(item) if item.is_dir() else item.unlink()
             removed.append(item.name)
     return removed
+
+
+def set_library_name(name: str, library_name: str, process_prefix: str | None = None) -> None:
+    """Set the library name (master file key "foundry_name"), which is what INTERCONNECT shows and what the
+    .cml file is called. process_prefix (e.g. "lum_") is put in front of every element name; None keeps it,
+    "" removes it."""
+    master = foundry_dir(name) / "lumfoundry_template.json"       # master file 1, the one the compiler is told to use
+    data = json.loads(master.read_text(encoding="utf-8-sig"))
+    data["foundry_name"] = library_name
+    if process_prefix is not None:
+        if process_prefix:
+            data["process_prefix"] = process_prefix
+        else:
+            data.pop("process_prefix", None)
+    master.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
 DEFAULT_TEST_ELEMENTS = ["wg_strip_straight_c", "wg_bend_90"]
