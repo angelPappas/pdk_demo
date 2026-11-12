@@ -5,6 +5,7 @@ __pycache__/
 
 # Interconnect-related files
 lumfoundry_template
+pdk_demo
 
 # Simulation files and byproducts
 *.fsp
