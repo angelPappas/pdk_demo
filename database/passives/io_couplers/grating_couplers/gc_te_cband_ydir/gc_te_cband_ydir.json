@@ -1,0 +1,114 @@
+{
+  "general": {
+    "description": "TFLN WG1 grating coupler with its 200 um taper (one element) - C band TE",
+    "prefix": "GC",
+    "notes": {
+      "_data": [
+        {
+          "property": "wavelength_range",
+          "value": "1530 - 1570 nm"
+        },
+        {
+          "property": "polarization",
+          "value": "TE"
+        },
+        {
+          "property": "taper",
+          "value": "EME S-matrix, 1 to 12 um over 200 um"
+        },
+        {
+          "property": "grating",
+          "value": "3D FDTD power efficiency, 8 deg fibre; phase and reflection not simulated"
+        }
+      ],
+      "_type": "cell"
+    }
+  },
+  "ports": {
+    "opt_1": {
+      "name": "opt_1",
+      "dir": "Bidirectional",
+      "loc": 0.5,
+      "pos": "Left",
+      "order": 1
+    },
+    "opt_2": {
+      "name": "opt_2",
+      "dir": "Bidirectional",
+      "loc": 0.5,
+      "pos": "Right",
+      "order": 2
+    }
+  },
+  "model_data": {
+    "photonic_model": "spar_fixed",
+    "mode_data": {
+      "_data": [
+        {
+          "ID": 1.0,
+          "name": "TE"
+        }
+      ],
+      "_type": "cell"
+    },
+    "number_of_taps_estimation": "group delay",
+    "digital_filter_type": "FIR",
+    "fir_taps": 1.0,
+    "spar_filename": "gc_te_cband_ydir_S_params.txt",
+    "passivity_enforcement": "ignore",
+    "reciprocity_enforcement": "ignore"
+  },
+  "QA": {
+    "parameters": {
+      "wavelength": {
+        "min": 1.5300000000000006e-06,
+        "max": 1.57e-06
+      }
+    },
+    "number_wavelength_points": 1000,
+    "compare_time_abs_transmission": 0,
+    "compare_time_bandwidth_fraction": 0.3,
+    "reference_data_available": 1,
+    "relative_tolerances": {
+      "group_delay": 0.05
+    },
+    "absolute_tolerances": {
+      "S_data": 0.0001,
+      "S_regression": 1e-05,
+      "S_time": 0.025,
+      "power_dB": 1e-06,
+      "passivity": 1e-05,
+      "reciprocity": 1e-05,
+      "wavelength_nm": 1e-05
+    },
+    "GD_qa_ports": {
+      "_data": [
+        {
+          "_complex": false,
+          "_data": [
+            1.0,
+            2.0
+          ],
+          "_size": [
+            1,
+            2
+          ],
+          "_type": "matrix"
+        },
+        {
+          "_complex": false,
+          "_data": [
+            2.0,
+            1.0
+          ],
+          "_size": [
+            1,
+            2
+          ],
+          "_type": "matrix"
+        }
+      ],
+      "_type": "cell"
+    }
+  }
+}
