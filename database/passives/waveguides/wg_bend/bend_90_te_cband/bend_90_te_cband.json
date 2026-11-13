@@ -1,0 +1,114 @@
+{
+  "general": {
+    "description": "TFLN WG1 90-degree bend, R = 50 um - C band TE",
+    "prefix": "WG",
+    "notes": {
+      "_data": [
+        {
+          "property": "wavelength_range",
+          "value": "1530 - 1570 nm"
+        },
+        {
+          "property": "radius",
+          "value": "50 um"
+        },
+        {
+          "property": "loss",
+          "value": "3D FDTD, bend minus straight control, linear fit; 0.14 dB at 1550 nm"
+        },
+        {
+          "property": "phase",
+          "value": "first order from bent-FDE neff and ng; reflection not simulated"
+        }
+      ],
+      "_type": "cell"
+    }
+  },
+  "ports": {
+    "opt_1": {
+      "name": "opt_1",
+      "dir": "Bidirectional",
+      "loc": 0.5,
+      "pos": "Left",
+      "order": 1
+    },
+    "opt_2": {
+      "name": "opt_2",
+      "dir": "Bidirectional",
+      "loc": 0.5,
+      "pos": "Top",
+      "order": 2
+    }
+  },
+  "model_data": {
+    "photonic_model": "spar_fixed",
+    "mode_data": {
+      "_data": [
+        {
+          "ID": 1.0,
+          "name": "TE"
+        }
+      ],
+      "_type": "cell"
+    },
+    "number_of_taps_estimation": "group delay",
+    "digital_filter_type": "FIR",
+    "fir_taps": 1.0,
+    "spar_filename": "bend90_te_cband_ydir_S_params.txt",
+    "passivity_enforcement": "ignore",
+    "reciprocity_enforcement": "ignore"
+  },
+  "QA": {
+    "parameters": {
+      "wavelength": {
+        "min": 1.5300000000000002e-06,
+        "max": 1.57e-06
+      }
+    },
+    "number_wavelength_points": 1000,
+    "compare_time_abs_transmission": 0,
+    "compare_time_bandwidth_fraction": 0.3,
+    "reference_data_available": 1,
+    "relative_tolerances": {
+      "group_delay": 0.05
+    },
+    "absolute_tolerances": {
+      "S_data": 0.0001,
+      "S_regression": 1e-05,
+      "S_time": 0.025,
+      "power_dB": 1e-06,
+      "passivity": 1e-05,
+      "reciprocity": 1e-05,
+      "wavelength_nm": 1e-05
+    },
+    "GD_qa_ports": {
+      "_data": [
+        {
+          "_complex": false,
+          "_data": [
+            1.0,
+            2.0
+          ],
+          "_size": [
+            1,
+            2
+          ],
+          "_type": "matrix"
+        },
+        {
+          "_complex": false,
+          "_data": [
+            2.0,
+            1.0
+          ],
+          "_size": [
+            1,
+            2
+          ],
+          "_type": "matrix"
+        }
+      ],
+      "_type": "cell"
+    }
+  }
+}

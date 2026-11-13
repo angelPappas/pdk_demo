@@ -4,7 +4,7 @@ import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-PREFIXES = ("wg", "dc", "gc")
+PREFIXES = ("wg", "dc", "gc", "bend")
 
 
 class PhotonicComponent(ABC):
@@ -17,7 +17,9 @@ class PhotonicComponent(ABC):
 
 	@classmethod
 	def create(cls, folder: Path) -> "PhotonicComponent":
-		kind = {"wg": waveguide, "dc": directional_coupler, "gc": grating_coupler}[folder.name.casefold()[:2]]
+		name = folder.name.casefold()
+		kind = {"wg": waveguide, "dc": directional_coupler, "gc": grating_coupler, "bend": bend_90}[
+			"bend" if name.startswith("bend") else name[:2]]
 		return kind(folder)
 
 	@classmethod
@@ -59,9 +61,9 @@ class waveguide(PhotonicComponent):
 		return self.TEMPLATES.get(model)
 
 
-class directional_coupler(PhotonicComponent):
+class _spar_component(PhotonicComponent):
 	"""S-parameter component (spar_fixed): the json plus <name>_S_params.txt, both copied into the element."""
-	TEMPLATES = {"spar_fixed": "dc_strip_te_c"}
+	TEMPLATES: dict[str, str] = {}
 
 	@property
 	def sparams_file(self) -> Path:
@@ -82,8 +84,31 @@ class directional_coupler(PhotonicComponent):
 		shutil.copy2(self.sparams_file, foundry_dir / "source" / self.name / self.sparams_file.name)
 
 
-class grating_coupler(PhotonicComponent):
-	template = None                       # not ready yet
+class directional_coupler(_spar_component):
+	TEMPLATES = {"spar_fixed": "dc_strip_te_c"}
+
+
+class grating_coupler(_spar_component):
+	"""Grating coupler and its taper as ONE 2-port element (opt_1 waveguide, opt_2 fibre)."""
+	TEMPLATES = {"spar_fixed": "gc_strip_te_c"}
+
+
+class bend_90(_spar_component):
+	"""90-degree bend (fixed radius) as a 2-port S-parameter element: opt_1 input, opt_2 output.
+	Built on a spar_fixed template that is still free (1x2 MMI), because every template can be used once per library.
+	The MMI's icon is replaced by the icon of the wg_bend_90 template."""
+	TEMPLATES = {"spar_fixed": "mmi_1x2_strip_te_c"}
+	ICON_TEMPLATE = "wg_bend_90"
+
+	def update(self, foundry_dir: Path) -> None:
+		super().update(foundry_dir)
+		dest = foundry_dir / "source" / self.name
+		icon = foundry_dir / "source" / self.ICON_TEMPLATE / f"{self.ICON_TEMPLATE}.svg"
+		if not icon.is_file():
+			raise RuntimeError(f"Icon {icon} not found (deployed template library).")
+		for old in dest.glob("*.svg"):                      # the MMI icon that came with the template
+			old.unlink()
+		shutil.copy2(icon, dest / f"{self.name}.svg")
 
 
 def main() -> None:
