@@ -16,3 +16,10 @@ gc_n_periods,20,1,Number of grating periods
 gc_fiber_angle,8.0,deg,Fibre tilt in air; positive = tilted toward the waveguide side in the 3D FDTD convention
 bend_radius,50.0,um,Radius of the circular bends (U-turns, rings, MZI arms); chosen from the 3D FDTD bend study (R = 20, 30, 50 um)
 gc_pitch,127.0,um,Fibre-array pitch used for the output grating couplers on the test die
+mmi_width,5.0,um,1x2 MMI multimode section width at the ridge BASE (3D FDTD tolerance check: 4.9/5.0/5.1)
+mmi_length,17.5,um,1x2 MMI multimode section length (3D FDTD length sweep: 16.5/17.5/18.0 -> 0.29/0.15/0.19 dB)
+mmi_taper_width,1.5,um,Width of the access tapers at the MMI (ridge BASE)
+mmi_taper_length,10.0,um,Length of the 1.0 um -> mmi_taper_width access tapers
+mmi_port_offset,1.25,um,Distance of each output centre from the MMI axis (= mmi_width / 4 for the symmetric 1x2 interference)
+mmi_port_separation,5.0,um,Centre-to-centre separation of the two MMI output ports after the S-bends (as simulated)
+mmi_lead_length,3.0,um,Straight lead between each MMI port plane and the taper or S-bend (as simulated)

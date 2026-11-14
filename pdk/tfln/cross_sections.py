@@ -12,4 +12,5 @@ def wg(
         width=width,
         layer=LAYER.WG,
         radius=radius,
+        radius_min=radius,
     )
