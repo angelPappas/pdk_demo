@@ -1,6 +1,6 @@
 {
   "general": {
-    "description": "TFLN WG1 grating coupler with its 200 um taper (one element) - C band TE",
+    "description": "TFLN WG grating coupler with its 200 um taper (one element) - C band TE",
     "prefix": "GC",
     "notes": {
       "_data": [

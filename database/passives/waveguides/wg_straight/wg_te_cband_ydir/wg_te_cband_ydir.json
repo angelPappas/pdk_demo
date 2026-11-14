@@ -1,6 +1,6 @@
 {
   "general": {
-    "description": "TFLN WG1 ridge waveguide (1.0 um base width, 400 nm ridge), TE, 1500-1600 nm",
+    "description": "TFLN WG ridge waveguide (1.0 um base width, 400 nm ridge), TE, 1500-1600 nm",
     "prefix": "WG",
     "notes": {
       "_data": [

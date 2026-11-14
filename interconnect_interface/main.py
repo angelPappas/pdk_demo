@@ -28,8 +28,9 @@ for c in found:
 	print(f"{'+' if c in ready else '-'} {c.name}" + (f"  (template {c.template})" if c in ready else "  (not ready, skipped)"))
 if not ready:
 	raise SystemExit("No component is ready to be built.")
-if len({c.template for c in ready}) != len(ready):
-	raise SystemExit("Two ready components share one template; deploy them separately (not supported yet).")
+shared = sorted({c.template for c in ready if sum(d.template == c.template for d in ready) > 1})
+if shared:                              # each element is created from the compiler's template store under its own name
+	print(f"Note: several components share the template(s) {', '.join(shared)}; each is added under its own name.")
 
 # 2. Template library named pdk_demo.
 cml.deploy_template(FOUNDRY_NAME)

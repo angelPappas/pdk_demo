@@ -1,6 +1,6 @@
 {
   "general": {
-    "description": "TFLN WG1 directional coupler, 0.40 um gap, 21 um coupling length - C band TE",
+    "description": "TFLN WG directional coupler, 0.40 um gap, 21 um coupling length - C band TE",
     "prefix": "DC",
     "notes": {
       "_data": [

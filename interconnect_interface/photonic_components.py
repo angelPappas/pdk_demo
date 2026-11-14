@@ -1,10 +1,11 @@
 """Database components and how each one is added to the INTERCONNECT library source directory."""
 import json
+import re
 import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-PREFIXES = ("wg", "dc", "gc", "bend")
+PREFIXES = ("wg", "dc", "gc", "bend", "mmi")
 
 
 class PhotonicComponent(ABC):
@@ -18,18 +19,20 @@ class PhotonicComponent(ABC):
 	@classmethod
 	def create(cls, folder: Path) -> "PhotonicComponent":
 		name = folder.name.casefold()
-		kind = {"wg": waveguide, "dc": directional_coupler, "gc": grating_coupler, "bend": bend_90}[
-			"bend" if name.startswith("bend") else name[:2]]
+		key = "bend" if name.startswith("bend") else "mmi" if name.startswith("mmi") else name[:2]
+		kind = {"wg": waveguide, "dc": directional_coupler, "gc": grating_coupler,
+				"bend": bend_90, "mmi": mmi_1x2}[key]
 		return kind(folder)
 
 	@classmethod
 	def discover(cls, database_path: str | Path) -> list["PhotonicComponent"]:
-		"""All component folders (wg*, dc*, gc*) anywhere inside the database."""
+		"""All component folders anywhere inside the database: a folder <name> that holds <name>.json.
+		Grouping folders (wg_bend, wg_straight, ...) have no such json and are not components."""
 		root = Path(database_path)
 		if not root.is_dir():
 			raise NotADirectoryError(f"Database folder does not exist: {root}")
 		return [cls.create(f) for f in sorted(root.rglob("*"))
-				if f.is_dir() and f.name.casefold().startswith(PREFIXES)]
+				if f.is_dir() and f.name.casefold().startswith(PREFIXES) and (f / f"{f.name}.json").is_file()]
 
 	@property
 	@abstractmethod
@@ -48,10 +51,58 @@ class PhotonicComponent(ABC):
 		shutil.copy2(self.json_file, dest / f"{self.name}.json")
 
 
+def rotate_svg_90(path: Path) -> None:
+	"""Rotate the picture of an svg file by 90 degrees clockwise (horizontal icon -> vertical icon).
+	The content is wrapped in a group with a transform and the canvas (viewBox, width, height) is swapped."""
+	text = path.read_text(encoding="utf-8")
+	m = re.search(r"<svg\b[^>]*>", text)
+	if m is None:
+		raise RuntimeError(f"{path} has no <svg> element")
+	root = m.group(0)
+
+	def attr(name):
+		a = re.search(rf'\s{name}\s*=\s*"([^"]*)"', root)
+		return a.group(1) if a else None
+
+	def number(v):
+		n = re.match(r"\s*([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)", v or "")
+		return float(n.group(1)) if n else None
+
+	vb = attr("viewBox")
+	if vb:
+		minx, miny, w, h = (float(v) for v in re.split(r"[ ,]+", vb.strip()))
+	else:
+		w, h = number(attr("width")), number(attr("height"))
+		if w is None or h is None:
+			raise RuntimeError(f"{path}: need a viewBox or numeric width and height to rotate it")
+		minx = miny = 0.0
+	new_root = root
+	new_vb = f"{minx:g} {miny:g} {h:g} {w:g}"
+	new_root = re.sub(r'(\sviewBox\s*=\s*)"[^"]*"', rf'\1"{new_vb}"', new_root) if vb else new_root[:-1] + f' viewBox="{new_vb}">'
+	wa, ha = attr("width"), attr("height")
+	if wa is not None and ha is not None:                     # swap the displayed size, keep the units
+		new_root = re.sub(r'(\swidth\s*=\s*)"[^"]*"', lambda _: f'{_.group(1)}"{ha}"', new_root, count=1)
+		new_root = re.sub(r'(\sheight\s*=\s*)"[^"]*"', lambda _: f'{_.group(1)}"{wa}"', new_root, count=1)
+	group = f'<g transform="translate({minx + miny + h:g} {miny - minx:g}) rotate(90)">'
+	end = text.rindex("</svg>")
+	body = text[m.end():end]
+	path.write_text(text[:m.start()] + new_root + group + body + "</g>" + text[end:], encoding="utf-8")
+
+
 class waveguide(PhotonicComponent):
 	# the library master file ties an element to a photonic model, so the template must match the json
 	TEMPLATES = {"waveguide_simple": "wg_strip_straight_c",
 				 "wg_parameterized": "wg_strip_straight_parameterized"}
+
+	def update(self, foundry_dir: Path) -> None:
+		super().update(foundry_dir)
+		if self.name.casefold().endswith("zdir"):           # z-direction waveguide: ports are bottom / top
+			dest = foundry_dir / "source" / self.name
+			icons = sorted(dest.glob("*.svg"))
+			if not icons:
+				raise RuntimeError(f"No svg icon found in {dest} to rotate.")
+			for icon in icons:
+				rotate_svg_90(icon)
 
 	@property
 	def template(self) -> str | None:
@@ -86,6 +137,11 @@ class _spar_component(PhotonicComponent):
 
 class directional_coupler(_spar_component):
 	TEMPLATES = {"spar_fixed": "dc_strip_te_c"}
+
+
+class mmi_1x2(_spar_component):
+	"""1x2 MMI splitter: opt_1 input (left), opt_2 bottom output, opt_3 top output (right)."""
+	TEMPLATES = {"spar_fixed": "mmi_1x2_strip_te_c"}
 
 
 class grating_coupler(_spar_component):

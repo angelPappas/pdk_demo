@@ -1,6 +1,6 @@
 {
   "general": {
-    "description": "TFLN WG1 90-degree bend, R = 50 um - C band TE",
+    "description": "TFLN WG 90-degree bend, R = 50 um - C band TE",
     "prefix": "WG",
     "notes": {
       "_data": [
@@ -54,7 +54,7 @@
     "number_of_taps_estimation": "group delay",
     "digital_filter_type": "FIR",
     "fir_taps": 1.0,
-    "spar_filename": "bend90_te_cband_ydir_S_params.txt",
+    "spar_filename": "bend_90_te_cband_S_params.txt",
     "passivity_enforcement": "ignore",
     "reciprocity_enforcement": "ignore"
   },
