@@ -5,7 +5,7 @@ import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-PREFIXES = ("wg", "dc", "gc", "bend", "mmi")
+PREFIXES = ("wg", "dc", "gc", "bend", "rr")
 
 
 class PhotonicComponent(ABC):
@@ -19,9 +19,9 @@ class PhotonicComponent(ABC):
 	@classmethod
 	def create(cls, folder: Path) -> "PhotonicComponent":
 		name = folder.name.casefold()
-		key = "bend" if name.startswith("bend") else "mmi" if name.startswith("mmi") else name[:2]
-		kind = {"wg": waveguide, "dc": directional_coupler, "gc": grating_coupler,
-				"bend": bend_90, "mmi": mmi_1x2}[key]
+		kind = {"wg": waveguide, "dc": directional_coupler, "gc": grating_coupler, "bend": bend_90,
+				"rr": compound_ring}[
+			"bend" if name.startswith("bend") else name[:2]]
 		return kind(folder)
 
 	@classmethod
@@ -32,7 +32,8 @@ class PhotonicComponent(ABC):
 		if not root.is_dir():
 			raise NotADirectoryError(f"Database folder does not exist: {root}")
 		return [cls.create(f) for f in sorted(root.rglob("*"))
-				if f.is_dir() and f.name.casefold().startswith(PREFIXES) and (f / f"{f.name}.json").is_file()]
+				if f.is_dir() and f.name.casefold().startswith(PREFIXES)
+				and ((f / f"{f.name}.json").is_file() or (f / f"{f.name}.ice").is_file())]
 
 	@property
 	@abstractmethod
@@ -139,11 +140,6 @@ class directional_coupler(_spar_component):
 	TEMPLATES = {"spar_fixed": "dc_strip_te_c"}
 
 
-class mmi_1x2(_spar_component):
-	"""1x2 MMI splitter: opt_1 input (left), opt_2 bottom output, opt_3 top output (right)."""
-	TEMPLATES = {"spar_fixed": "mmi_1x2_strip_te_c"}
-
-
 class grating_coupler(_spar_component):
 	"""Grating coupler and its taper as ONE 2-port element (opt_1 waveguide, opt_2 fibre)."""
 	TEMPLATES = {"spar_fixed": "gc_strip_te_c"}
@@ -167,12 +163,41 @@ class bend_90(_spar_component):
 		shutil.copy2(icon, dest / f"{self.name}.svg")
 
 
+class compound_ring(PhotonicComponent):
+	"""Several library elements wired into ONE element (a compound), e.g. the single-bus racetrack resonator:
+	DC + 4 x bend_90 + straight. It has no photonic model and no template: the database folder holds
+	<name>.ice (the compound saved from INTERCONNECT) and <name>.svg (its icon), and both go into
+	source/user_created/, which the compiler adds to the library as it is. The elements inside the compound
+	must be built in the same library (they are looked up in Design Kits)."""
+
+	@property
+	def ice_file(self) -> Path:
+		return self.folder / f"{self.name}.ice"
+
+	@property
+	def icon_file(self) -> Path:
+		return self.folder / f"{self.name}.svg"
+
+	@property
+	def template(self) -> str | None:
+		return None                                         # not built from a lumfoundry template
+
+	def is_ready(self) -> bool:
+		return self.ice_file.is_file() and self.icon_file.is_file()
+
+	def update(self, foundry_dir: Path) -> None:
+		dest = foundry_dir / "source" / "user_created"
+		dest.mkdir(parents=True, exist_ok=True)
+		shutil.copy2(self.ice_file, dest / self.ice_file.name)
+		shutil.copy2(self.icon_file, dest / self.icon_file.name)
+
+
 def main() -> None:
 	import argparse
 	parser = argparse.ArgumentParser(description="List database components and whether they are ready.")
 	parser.add_argument("database_path")
 	for c in PhotonicComponent.discover(parser.parse_args().database_path):
-		print(f"{c.name}: {'ready, template ' + c.template if c.is_ready() else 'not ready'}")
+		print(f"{c.name}: {'ready, ' + ('template ' + c.template if c.template else 'compound (.ice + .svg)') if c.is_ready() else 'not ready'}")
 
 
 if __name__ == "__main__":

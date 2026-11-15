@@ -57,7 +57,7 @@
     "number_of_taps_estimation": "group delay",
     "digital_filter_type": "FIR",
     "fir_taps": 1.0,
-    "spar_filename": "mmi_te_cband_ydir_S_params.txt",
+    "spar_filename": "mmi_1x2_te_cband_ydir_S_params.txt",
     "passivity_enforcement": "ignore",
     "reciprocity_enforcement": "ignore"
   },

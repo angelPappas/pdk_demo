@@ -61,8 +61,8 @@ def directional_coupler(
 
     c.add_port("o1", port=b_bot_l.ports["o2"])
     c.add_port("o2", port=b_top_l.ports["o2"])
-    c.add_port("o3", port=b_top_r.ports["o2"])
-    c.add_port("o4", port=b_bot_r.ports["o2"])
+    c.add_port("o3", port=b_bot_r.ports["o2"])
+    c.add_port("o4", port=b_top_r.ports["o2"])
     c.info["gap"] = gap
     c.info["length"] = length
     c.info["width"] = width

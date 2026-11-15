@@ -13,6 +13,9 @@ pdk_demo
 *.icp
 *.log
 *:Zone.Identifier
+*.hdf5
+*.npz
+*.s4p
 
 # C extensions
 *.so
