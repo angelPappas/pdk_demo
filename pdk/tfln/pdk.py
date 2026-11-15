@@ -8,6 +8,7 @@ from .cells.directional_coupler import directional_coupler
 from .cells.taper import taper
 from .cells.grating_coupler import grating_coupler
 from .cells.mmi_1x2 import mmi_1x2
+from .cells.racetrack_resonator import racetrack_resonator
 
 
 TFLN_PDK = gf.Pdk(
@@ -24,6 +25,7 @@ TFLN_PDK = gf.Pdk(
         "taper": taper,
         "grating_coupler": grating_coupler,
         "mmi_1x2": mmi_1x2,
+        "racetrack_resonator": racetrack_resonator,
     },
 )
 

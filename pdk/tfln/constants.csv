@@ -23,3 +23,7 @@ mmi_taper_length,10.0,um,Length of the 1.0 um -> mmi_taper_width access tapers
 mmi_port_offset,1.25,um,Distance of each output centre from the MMI axis (= mmi_width / 4 for the symmetric 1x2 interference)
 mmi_port_separation,5.0,um,Centre-to-centre separation of the two MMI output ports after the S-bends (as simulated)
 mmi_lead_length,3.0,um,Straight lead between each MMI port plane and the taper or S-bend (as simulated)
+racetrack_dc_gap,0.4,um,Racetrack coupler gap at the ridge base (Tidy3D optimised)
+racetrack_dc_length,3.0,um,Racetrack coupler straight coupled length (kappa^2 = 12.3 % at 1550 nm)
+racetrack_dc_s_bend_length,21.0,um,Racetrack coupler S-bend length (as simulated in Tidy3D)
+racetrack_dc_lead_length,3.0,um,Racetrack coupler straight lead at each port (port planes of the Tidy3D simulation)
