@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>TFLN_DEMO DRC</description>
+ <version/>
+ <category>drc</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>drc_scripts</group-name>
+ <menu-path>tools_menu.drc.end</menu-path>
+ <interpreter>dsl</interpreter>
+ <dsl-interpreter-name>drc-dsl-xml</dsl-interpreter-name>
+ <text># TFLN_DEMO design rules (values from constants.csv)
+report("TFLN_DEMO DRC", $report)
+
+WG = input(1, 0)
+MET1 = input(10, 0)
+
+WG.width(0.5.um, angle_limit(80)).output("WG.W.1", "WG width &lt; 0.5 um")
+WG.space(0.35.um, angle_limit(80)).output("WG.S.1", "WG space &lt; 0.35 um")
+MET1.width(2.0.um, angle_limit(80)).output("MET1.W.1", "MET1 width &lt; 2.0 um")
+MET1.space(2.0.um, angle_limit(80)).output("MET1.S.1", "MET1 space &lt; 2.0 um")
+</text>
+</klayout-macro>

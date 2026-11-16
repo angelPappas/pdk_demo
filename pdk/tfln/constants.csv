@@ -27,3 +27,8 @@ racetrack_dc_gap,0.4,um,Racetrack coupler gap at the ridge base (Tidy3D optimise
 racetrack_dc_length,3.0,um,Racetrack coupler straight coupled length (kappa^2 = 12.3 % at 1550 nm)
 racetrack_dc_s_bend_length,21.0,um,Racetrack coupler S-bend length (as simulated in Tidy3D)
 racetrack_dc_lead_length,3.0,um,Racetrack coupler straight lead at each port (port planes of the Tidy3D simulation)
+drc_wg_min_width,0.5,um,DRC: minimum WG ridge width at the base (ASSUMED demo value; the grating teeth at 0.567 um are the narrowest feature in the PDK)
+drc_wg_min_space,0.35,um,DRC: minimum WG gap at the base (ASSUMED demo value; narrowest gaps in the PDK are the 0.378 um grating gaps and 0.4 um coupler gaps)
+drc_met1_min_width,2.0,um,DRC: minimum MET1 width (ASSUMED demo value; MET1 only appears as placeholder boxes)
+drc_met1_min_space,2.0,um,DRC: minimum MET1 gap (ASSUMED demo value; MET1 only appears as placeholder boxes)
+drc_angle_limit,80.0,deg,DRC: corners sharper than this are not width/space-checked (avoids false errors at polygon joints)
