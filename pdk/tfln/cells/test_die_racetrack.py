@@ -32,6 +32,7 @@ DC_LEN = CONSTANTS["racetrack_dc_length"]
 DC_SBEND = CONSTANTS["racetrack_dc_s_bend_length"]
 DC_LEAD = CONSTANTS["racetrack_dc_lead_length"]
 FEED = 60.0                       # straight between a grating and the structure
+LOOP_CLEAR = 15.0                 # loop-back: spacing between the final down-leg and the serpentine's outer bends
 
 
 # ------------------------------------------------------------------ helpers
@@ -79,14 +80,17 @@ def loopback(n_turns: int, total_length: float) -> gf.Component:
     assert n_turns % 2 == 0
     v = PITCH + n_turns * 2 * R - 2 * R                     # vertical leg of the final U-turn
     arcs = (n_turns + 1) * math.pi * R                      # n_turns serpentine turns + the final U-turn
-    straight = (total_length - arcs - v) / (n_turns + 2)    # same length for every straight segment
+    clear = LOOP_CLEAR if n_turns else 0.0                  # the down-leg must clear the serpentine's right-hand bends
+    straight = (total_length - arcs - v - 2 * clear) / (n_turns + 2)   # same length for every straight segment
     if straight < 10:
         raise ValueError(f"total_length {total_length} too short for {n_turns} turns")
     parts = [_straight(straight)]
     for i in range(n_turns):
         s = 1 if i % 2 == 0 else -1
         parts += [_bend(s), _bend(s), _straight(straight)]
-    parts += _u_back(-1, v, straight)
+    if clear:                                               # without it the down-leg is tangent to every right-hand turn
+        parts.append(_straight(clear))
+    parts += _u_back(-1, v, straight + clear)               # back leg also longer, so the output stays at x = 0
     return _chain(parts)
 
 
